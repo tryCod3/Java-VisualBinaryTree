@@ -1,0 +1,16 @@
+eclipse.preferences.version=1
+encoding//src/bst/SettingBst.java=UTF-8
+encoding//src/move/LightNode.java=UTF-8
+encoding//src/move/Move.java=UTF-8
+encoding//src/move/OnlyOne.java=UTF-8
+encoding//src/move/SetUp.java=UTF-8
+encoding//src/system/Dlete.java=UTF-8
+encoding//src/system/Draw.java=UTF-8
+encoding//src/system/Event.java=UTF-8
+encoding//src/system/Gui.java=UTF-8
+encoding//src/system/Insert.java=UTF-8
+encoding//src/system/Line.java=UTF-8
+encoding//src/system/Message.java=UTF-8
+encoding//src/system/Question.java=UTF-8
+encoding//src/system/Search.java=UTF-8
+encoding//src/system/Update.java=UTF-8
