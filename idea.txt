@@ -1,0 +1,82 @@
+﻿
+
+1 : thêm node trên Gui
+
+ý tưởnng về việc thêm trên Gui là 
+node đầu tiên sẽ dượcc thêm chính giữa Gui theo chiều x
+
+*mình thêm sẽ 5
+                                                         5
+
+rồi sau dó , ta thêm những node khác vào dựa theo vị trí node đằng trước nó , nếu giá trị của node thêm 
+> giá trị node đằng trướcc thì ta sẽ di chuyển nó về bên phải và  tăng chiều cao củaa nó , nguược lại sẽ về bên trái
+
+* mình thêm lần lượt sẽ 1 và 6
+
+số 1 < 5 nên thêm về bên trái
+							 5
+						1
+sẽ 6 > 5 nên thêm về bên phải
+							 5
+						1       	  6
+
+nhìn rất trực quan , vậy mình thêm con 4 thì sao 
+
+* thêm con số 4
+vì 4 < 5 nên sẽ qua trái
+   4 > 1 nên sẽ qua ph?i
+
+							 5
+						1 	 	 6
+							 4
+
+số 4 đứng vị trí đó vì mình dã set cứng phần qua trái qua phải và độ cao của nó (mặc định sẽ là w:40 , h:60)
+
+cách khắc phục :
+tìm node trùng vị trí x của nó , ta có con node(5).X == node(4).X
+
+và theo cách duyệt của mình thì ta sẽ lấy được node 1 , 4 và và trí X củaa nó sẽ - w , ta sẽ được
+
+							 5
+					1 	 	         6
+						4
+
+cứ như thế ta sẽ hoàn thành node thêm , việc này mình chia thành 4 trường hợp
+
+
+
+2: xóa 1 node trên Gui
+
+giả sử  dây mình xóa con 4
+
+ta sẽ được
+
+							 5
+					1 	 	         6
+						
+và nhu trên hình các bạn thấy khi xóa số 4 và khi xóa xong thì vị trí số 1 sẽ + thêm w
+
+ 
+							 5
+						1 	 	  6
+
+
+việc xóa mình sẽ xóa hết các node trên Gui và thêm chúng lại , có thể có cách nhanh hon nhung hiên tại mình chưa thể nghỉ ra cách giải quyết
+
+-> nếu Gui có nhiều node thì việc  xóa và cập nhật lại Gui là O(N) (N lànode trong cây)
+
+
+
+
+
+
+
+
+
+
+
+
+
+								
+			
+						
