@@ -1,0 +1,6 @@
+
+ch?y file MyMain.java trong package runmain
+
+bây gi? có th? thêm , s?a , c?p nh?t các node trên GUI
+
+chú ý : thêm , s?a , c?p nh?t , hay b?t c? gì trong Gui thì ch? th?c hi?n 1 l?n 1 nút duy nh?t
