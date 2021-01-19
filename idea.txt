@@ -61,9 +61,9 @@ và nhu trên hình các bạn thấy khi xóa số 4 và khi xóa xong thì v�
 						1 	 	  6
 
 
-việc xóa mình sẽ xóa hết các node trên Gui và thêm chúng lại , có thể có cách nhanh hon nhung hiên tại mình chưa thể nghỉ ra cách giải quyết
+việc xóa sẽ lâu nếu có nhiều node :> , bởi cài hơi cùi
 
--> nếu Gui có nhiều node thì việc  xóa và cập nhật lại Gui là O(N) (N lànode trong cây)
+-> nếu Gui có nhiều node thì việc  xóa và cập nhật lại Gui là O(N) (N là node trong cây)
 
 
 
