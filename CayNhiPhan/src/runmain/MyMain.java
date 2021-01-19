@@ -19,7 +19,7 @@ public class MyMain {
 
 				Event event = Event.getEvent();
 				event.available();
-				
+
 			}
 		});
 	}

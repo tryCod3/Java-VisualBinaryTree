@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutorService;
 import javax.swing.JPanel;
 
 import system.Dlete;
+import system.Gui;
 import system.Line;
 import system.Oval;
 
@@ -62,6 +63,7 @@ public class LightNode implements SetUp, Runnable {
 	 * đối tượng hỗ trợ
 	 */
 	private Oval oval = Oval.getOval();
+	private Line line = Line.getLine();
 
 	@Override
 	public ArrayList<JPanel> listLightNode(ArrayList<Integer> list) {
@@ -86,6 +88,11 @@ public class LightNode implements SetUp, Runnable {
 		for (int i = 0; i < light.size(); i++) {
 
 			light.get(i).setForeground(color);
+			
+			Line connect = line.getListLine().get(list.get(i));
+			if (connect != null) {
+				connect.setForeground(color);
+			}
 
 			try {
 				wait(sleep);
@@ -95,7 +102,9 @@ public class LightNode implements SetUp, Runnable {
 			}
 
 			light.get(i).setForeground(Color.GREEN);
-
+			if (connect != null) {
+				line.getListLine().get(list.get(i)).setForeground(Color.white);
+			}
 		}
 
 	}

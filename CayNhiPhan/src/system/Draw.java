@@ -1,5 +1,7 @@
 package system;
 
+import java.awt.Color;
+
 import javax.swing.JPanel;
 
 import bst.SettingBst;
@@ -52,6 +54,7 @@ public class Draw {
 			y2 = h;
 		}
 		Line line = new Line(x1, x2, y1, y2);
+		line.setForeground(Color.white);
 		line.setSize(w, h);
 		line.setLocation(x, y);
 		line.setBackground(gui.getContentPane().getBackground());

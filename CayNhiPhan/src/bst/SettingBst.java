@@ -31,6 +31,8 @@ public class SettingBst {
 	// traversal
 	public ArrayList<Integer> listTraversal = new ArrayList<Integer>();
 
+	// listDown
+	public ArrayList<Integer> listDown = new ArrayList<Integer>();
 	/**
 	 * những biến bên ngoài class sẽ sử dụng
 	 */
@@ -116,8 +118,42 @@ public class SettingBst {
 			list.add(x);
 			x = getPath(x);
 		} while (getPath(x) != x);
-
 		return list;
+	}
+
+	/**
+	 * 
+	 * @param q node bắt đầu vị trí bắt đầu cập nhập
+	 */
+	public void updatePath(Node q) {
+		if (q != null) {
+
+			if (q.getLeft() != null) {
+				int value = q.getLeft().getVal();
+				setPath(value, q.getVal());
+			}
+
+			if (q.getRight() != null) {
+				int value = q.getRight().getVal();
+				setPath(value, q.getVal());
+			}
+
+			updatePath(q.getLeft());
+			updatePath(q.getRight());
+		}
+	}
+
+	/**
+	 * @param node vị trí bắt đầu
+	 * @return node đó có bao nhiêu node
+	 */
+	public int cntChill(Node node) {
+		int chill = 0;
+		if (node.getLeft() != null)
+			chill++;
+		if (node.getRight() != null)
+			chill++;
+		return chill;
 	}
 
 	/**
@@ -129,6 +165,9 @@ public class SettingBst {
 	 */
 	public void fixLocal(int value, int x, int y) {
 		Node q = search(value);
+		if (q == null) {
+			return;
+		}
 		q.setLocalX(x);
 		q.setLocalY(y);
 	}
@@ -179,10 +218,23 @@ public class SettingBst {
 	}
 
 	/**
+	 * @param q node cần duyệt
+	 * @return giá trị lớn nhất bắt đầu chạy từ q
+	 */
+	public int rightMostValue(Node q) {
+		listMostChill.clear();
+		while (q != null) {
+			listMostChill.add(q.getVal());
+			q = q.getRight();
+		}
+		return listMostChill.get(listMostChill.size() - 1);
+	}
+
+	/**
 	 * @param q      : node bắt đầu
 	 * @param value  : giá trị cần bắt đầu để lấy những node khác
 	 * @param choise : lấy những node lớn hơn hoặc bé hơn vị trí @param locaionX
-	 * @param tmp : vị trí so sánh với q
+	 * @param tmp    : vị trí so sánh với q
 	 */
 
 	private void setNeedNode(Node q, int value, int choise, Node tmp) {
@@ -220,7 +272,7 @@ public class SettingBst {
 		Node q = node;
 		listNeedChill.clear();
 		Node tmp = search(value);
-		setNeedNode(q , value, choise, tmp);
+		setNeedNode(q, value, choise, tmp);
 	}
 
 	/**
@@ -230,6 +282,11 @@ public class SettingBst {
 		for (int i = 0; i < list.size(); i++) {
 			setPath(list.get(i), -1);
 			dle(list.get(i));
+			if(level == 1) {
+				setPath(node.getVal() , node.getVal());
+			}else {
+				updatePath(node);
+			}
 		}
 	}
 
@@ -248,6 +305,7 @@ public class SettingBst {
 			oval.Y = 10;
 			node.setLocalX(650);
 			node.setLocalY(10);
+			setPath(value, value);
 		} else {
 			Node q = node;
 			Node w = node;
@@ -265,6 +323,8 @@ public class SettingBst {
 				w = q;
 				oval.before_X = w.getLocalX();
 				oval.before_V = w.getVal();
+
+				setPath(value, data);
 
 				/** node will light */
 				BST.listLight_i.add(data);
@@ -324,23 +384,91 @@ public class SettingBst {
 			node.setRight(dleNode(node.getRight(), value));
 		} else {
 
-			if (node.getLeft() == null) {
-				Node n = node.getRight();
+			if (node.getLeft() == null && node.getRight() == null) {
 				node = null;
-				return n;
 			}
 
-			if (node.getRight() == null) {
-				Node n = node.getLeft();
-				node = null;
-				return n;
+			else {
+
+				Node next = (node.getRight() != null ? node.getRight() : node.getLeft());
+
+				boolean isRight = next.getVal() > node.getVal();
+
+				if (isRight) {
+					int val = leftMostValue(next);
+					int valPre = getPath(val);
+					Node pre = search(valPre);
+					Node now = null;
+					if (val == next.getVal()) {
+						now = pre.getRight();
+						if (now.getRight() != null) {
+							pre.setRight(now.getRight());
+						} else {
+							pre.setRight(null);
+						}
+						now = null;
+					} else {
+						now = pre.getLeft();
+						if (now.getRight() != null) {
+							pre.setLeft(now.getRight());
+						} else {
+							pre.setLeft(null);
+						}
+					}
+					now = null;
+					node.setVal(val);
+				} else {
+					int val = rightMostValue(next);
+					int valPre = getPath(val);
+					Node pre = search(valPre);
+					Node now = null;
+					if (val == next.getVal()) {
+						now = pre.getLeft();
+						if (now.getLeft() != null) {
+							pre.setLeft(now.getLeft());
+						} else {
+							pre.setLeft(null);
+						}
+					} else {
+						now = pre.getRight();
+						if (now.getLeft() != null) {
+							pre.setRight(now.getLeft());
+						} else {
+							pre.setRight(null);
+						}
+					}
+					now = null;
+					node.setVal(val);
+
+				}
+
 			}
 
-			node.setVal(leftMostValue(node.getRight()));
-			node.setRight(dleNode(node.getRight(), node.getVal()));
 		}
-
 		return node;
+	}
+
+	/**
+	 * 
+	 * @param tmp vị trí bắt đầu
+	 * 
+	 *            lấy một list số bắt đầu từ node tmp
+	 */
+	private void setListDown(Node tmp) {
+		if (tmp != null) {
+			listDown.add(tmp.getVal());
+			setListDown(tmp.getLeft());
+			setListDown(tmp.getRight());
+		}
+	}
+
+	/**
+	 * 
+	 * @param tmp vị trí bắt đầu
+	 */
+	public void getListDown(Node tmp) {
+		listDown.clear();
+		setListDown(tmp);
 	}
 
 	/**

@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import bst.Node;
 import bst.SettingBst;
@@ -57,14 +58,12 @@ public class Update {
 				gui.getContentPane().add(connect);
 			}
 		}
-		gui.getContentPane().revalidate();
-		gui.getContentPane().repaint();
 	}
 
 	/**
-	 * hàm sẽ di chuyển vị trí những node trên cây
-	 * 
 	 * @param listMove : những node sẽ di chuyển location trên cây
+	 * 
+	 * @return hàm sẽ di chuyển vị trí những node trên cây
 	 */
 	protected void ovalOnTree(ArrayList<Oval> listMove) {
 		for (int i = 0; i < listMove.size(); i++) {
@@ -80,9 +79,22 @@ public class Update {
 	 * @param listUpdateLine : listLine cần update
 	 * @param begin          : giá trị bắt đầu đường dẫn
 	 * 
-	 *                       updateGui khi thêm hoặc xóa node
+	 * @return                      updateGui khi thêm hoặc xóa node
 	 */
 	protected void updateGui(ArrayList<Oval> listUpdateOval, Set<Integer> listUpdateLine, int begin) {
+
+		Set<Integer> set = new HashSet<Integer>();
+
+		for (Oval oval : listUpdateOval) {
+			set.add(oval.getValue());
+		}
+
+		listUpdateLine.clear();
+
+		for (Integer i : set) {
+			listUpdateOval.add(oval.listOval.get(i));
+		}
+
 		ovalOnTree(listUpdateOval);
 
 		/**
@@ -96,7 +108,7 @@ public class Update {
 		/**
 		 * lấy những giá trong pathNode
 		 */
-		
+
 		Set<Integer> listTmp = bst.getListUpdateLine(begin);
 
 		if (listTmp != null) {
@@ -110,14 +122,91 @@ public class Update {
 	}
 
 	/**
+	 * 
+	 * @param listUpdate : danh sách node càn di chuyển
+	 * @param choise     : lựa chọn di chuyển sang phải hoặc trái
+	 * @param value      : giá trị cần tránh
+	 * 
+	 * @return                  có được 1 listOval cần được cập nhập
+	 */
+	protected void moveLocationX(ArrayList<Integer> listUpdate, int choise, int value) {
+		listUpdateOval.clear();
+		if (choise == bst.HIGHT) {
+			for (Integer i : listUpdate) {
+				if (i == value) {
+					continue;
+				}
+				if (!oval.listOval.containsKey(i)) {
+					continue;
+				}
+				int xx = oval.listOval.get(i).getLocation().x;
+				int yy = oval.listOval.get(i).getLocation().y;
+				oval.listOval.get(i).setLocation(xx - oval.W, yy);
+				listUpdateOval.add(oval.listOval.get(i));
+			}
+		} else if (choise == bst.LOW) {
+			for (Integer i : listUpdate) {
+				if (i == value) {
+					continue;
+				}
+				if (!oval.listOval.containsKey(i)) {
+					continue;
+				}
+				int xx = oval.listOval.get(i).getLocation().x;
+				int yy = oval.listOval.get(i).getLocation().y;
+				oval.listOval.get(i).setLocation(xx + oval.W, yy);
+				listUpdateOval.add(oval.listOval.get(i));
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * @param listUpdate : : danh sách node càn di chuyển
+	 * @param value      : giá trị cần tránh
+	 * 
+	 * @return                  có được 1 listOval cần được cập nhập
+	 */
+	protected void moveLocationY(ArrayList<Integer> listUpdate, int value) {
+		for (Integer i : listUpdate) {
+			if (i == value) {
+				continue;
+			}
+			if (!oval.listOval.containsKey(i)) {
+				continue;
+			}
+			int xx = oval.listOval.get(i).getLocation().x;
+			int yy = oval.listOval.get(i).getLocation().y;
+			oval.listOval.get(i).setLocation(xx, yy - oval.H);
+			listUpdateOval.add(oval.listOval.get(i));
+		}
+	}
+
+	/**
 	 * @param list : list số để insert , hàm sẽ vẽ lại các node có trong list
 	 */
 	protected void drawAgain(ArrayList<Integer> list) {
-		
-		for(Integer i : list) {
+
+		for (Integer i : list) {
 			new Insert().insertNormal(String.valueOf(i));
 		}
 
+	}
+
+	/**
+	 * 
+	 * @param gui : Gui của bạn
+	 * @return update gui
+	 */
+	public void loadGui(Gui gui) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				gui.getContentPane().revalidate();
+				gui.getContentPane().repaint();
+			}
+		});
 	}
 
 }

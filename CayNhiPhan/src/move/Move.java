@@ -73,7 +73,7 @@ public class Move implements Runnable {
 
 		boxMove.setForeground(Color.WHITE);
 
-		timer = new Timer(5 , new ActionListener() {
+		timer = new Timer(5, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
@@ -81,11 +81,11 @@ public class Move implements Runnable {
 				 * Bnew.Y sẽ chạy lên phía trên khi nào đúng chính xác vị trí Bold.Y thì sẽ di
 				 * chuyển tới phần location.X
 				 */
-			
+
 				if (boxOld.getLocation().y < boxMove.getLocation().y) {
 					boxMove.setLocation(boxMove.getLocation().x, boxMove.getLocation().y - 1);
 				} else {
-
+					boxOld.setSize(0, 0);
 					if (boxOld.getLocation().x != boxMove.getLocation().x) {
 						// right
 						if (boxM.getValue() > boxO.getValue()) {
@@ -94,6 +94,7 @@ public class Move implements Runnable {
 							boxMove.setLocation(boxMove.getLocation().x + 1, boxMove.getLocation().y);
 						}
 					} else {
+						boxM.setForeground(Color.GREEN);
 						synchronized (MOVE) {
 							MOVE.notifyAll();
 						}

@@ -142,6 +142,7 @@ public class Insert implements Runnable {
 			insertLine(connect);
 		}
 
+		update.loadGui(gui);
 	}
 
 	/**
@@ -150,8 +151,6 @@ public class Insert implements Runnable {
 	private void insertBox(JPanel box) {
 		box.setForeground(Color.GREEN);
 		gui.getContentPane().add(box);
-		gui.getContentPane().revalidate();
-		gui.getContentPane().repaint();
 	}
 
 	/**
@@ -159,8 +158,6 @@ public class Insert implements Runnable {
 	 */
 	private void insertLine(JPanel connect) {
 		gui.getContentPane().add(connect);
-		gui.getContentPane().revalidate();
-		gui.getContentPane().repaint();
 	}
 
 	/**
@@ -202,8 +199,6 @@ public class Insert implements Runnable {
 			oval.listOval.get(i).setLocation(xx - oval.W, yy);
 			update.listUpdateOval.add(oval.listOval.get(i));
 		}
-		gui.getContentPane().revalidate();
-		gui.getContentPane().repaint();
 	}
 
 	/**
@@ -224,8 +219,6 @@ public class Insert implements Runnable {
 			oval.listOval.get(i).setLocation(xx - oval.W, yy);
 			update.listUpdateOval.add(oval.listOval.get(i));
 		}
-		gui.getContentPane().revalidate();
-		gui.getContentPane().repaint();
 	}
 
 	/**
@@ -238,10 +231,8 @@ public class Insert implements Runnable {
 		bst.getNeedNode(value, bst.HIGHT);
 
 		for (Integer i : bst.listNeedChill) {
-
 			int xx = oval.listOval.get(i).getLocation().x;
 			int yy = oval.listOval.get(i).getLocation().y;
-
 			if (xx == box.getLocation().x) {
 				if (value != i) {
 					continue;
@@ -250,8 +241,6 @@ public class Insert implements Runnable {
 			oval.listOval.get(i).setLocation(xx + oval.W, yy);
 			update.listUpdateOval.add(oval.listOval.get(i));
 		}
-		gui.getContentPane().revalidate();
-		gui.getContentPane().repaint();
 	}
 
 	/**
@@ -270,8 +259,6 @@ public class Insert implements Runnable {
 			oval.listOval.get(i).setLocation(xx + oval.W, yy);
 			update.listUpdateOval.add(oval.listOval.get(i));
 		}
-		gui.getContentPane().revalidate();
-		gui.getContentPane().repaint();
 	}
 
 	/**

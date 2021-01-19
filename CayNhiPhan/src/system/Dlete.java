@@ -85,81 +85,19 @@ public class Dlete implements Runnable {
 	 */
 	private void dlete(String text) {
 
-		Node q = bst.search(Integer.parseInt(text));
-		int value = q.getVal();
-		int valueNext = value;
+		int value = Integer.parseInt(text);
+		Node tmp = bst.search(value);
+		boolean isNullChill = (bst.cntChill(tmp) == 0 ? true : false);
+		Oval ovalRemove = oval.listOval.get(value);
+		Line lineRemove = line.listLine.get(value);
 
-		JPanel line = search.find(Dlete.this.line, value);
-		boolean isNull = false;
-
-		// nếu node cần xóa không có con
-		if (q.getLeft() == null && q.getRight() == null) {
-			isNull = true;
+		// nếu nó không có con
+		if (isNullChill) {
+			removeOneOvalAndLine(lineRemove, ovalRemove);
+			drawing(value, false);
+		} else {
+			whenHaveChill(tmp);
 		}
-		// nếu node có 1 hoặc 2 con
-		else {
-
-			JPanel nextBoxLight = null;
-			move.setExecutorService(Executors.newSingleThreadExecutor());
-
-			if ((q.getLeft() != null && q.getRight() == null)) {
-
-				Node nextLeft = q.getLeft();
-				valueNext = nextLeft.getVal();
-				nextBoxLight = search.find(oval, nextLeft.getVal());
-
-			} else {
-
-				OnlyOne onlyOne = new OnlyOne(box, Color.red);
-				Thread run = new Thread(onlyOne);
-				run.start();
-
-				/** làm sáng các node trên listmostchill bắt đầu từ q.right() **/
-//				 get listLight
-				int valueLeft = bst.leftMostValue(q.getRight());
-
-//				 turn light left most chill
-				LightNode lightNodeChill = new LightNode(500, bst.listMostChill, Color.YELLOW);
-				move.getExecutorService().execute(lightNodeChill);
-
-//				get node di chuyển với box có giá trị cần xóa
-				nextBoxLight = search.find(oval, valueLeft);
-
-				valueNext = valueLeft;
-			}
-
-//			move node
-			Move moveNode = new Move(nextBoxLight, box);
-			move.getExecutorService().execute(moveNode);
-
-		}
-
-//		  waitting đợi Move thực hiện xong rồi hàm light sẽ thực hiện
-
-		if (!isNull) {
-			synchronized (move) {
-				try {
-					move.wait();
-					move.getExecutorService().shutdown();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-
-		// update
-		int root = bst.getFirstElement();
-		bst.getNeedNode(root, bst.ALL);
-		removeList(bst.listNeedChill);
-		ArrayList<Integer> listUpdate = new ArrayList<Integer>();
-		bst.dle(value);
-		bst.getNeedNode(root, bst.ALL);
-		listUpdate.addAll(new ArrayList<Integer>(bst.listNeedChill));
-		bst.listDle(bst.listNeedChill);
-		oval.listOval.clear();
-		Dlete.this.line.listLine.clear();
-		update.drawAgain(listUpdate);
 
 		/**
 		 * nếu sử dụng add_low thì event này sẽ hoạt động trở lại
@@ -167,6 +105,149 @@ public class Dlete implements Runnable {
 		synchronized (event) {
 			event.notifyAll();
 		}
+
+		update.loadGui(gui);
+	}
+
+	/**
+	 * 
+	 * @param value giá trị cần xóa
+	 */
+	private void whenHaveChill(Node q) {
+
+		JPanel nextBoxLight = null;
+		int value = q.getVal();
+		int valueNext = value;
+		move.setExecutorService(Executors.newSingleThreadExecutor());
+
+		OnlyOne onlyOne = new OnlyOne(box, Color.red);
+		Thread run = new Thread(onlyOne);
+		run.start();
+
+		int valueLeft = 0;
+
+		if ((q.getLeft() != null && q.getRight() == null)) {
+			valueLeft = bst.rightMostValue(q.getLeft());
+		} else {
+			valueLeft = bst.leftMostValue(q.getRight());
+		}
+
+//		 turn light left most chill
+		LightNode lightNodeChill = new LightNode(500, bst.listMostChill, Color.YELLOW);
+		move.getExecutorService().execute(lightNodeChill);
+
+//		get node di chuyển với box có giá trị cần xóa
+		nextBoxLight = search.find(oval, valueLeft);
+
+		valueNext = valueLeft;
+
+//		move node
+		Move moveNode = new Move(nextBoxLight, box);
+		move.getExecutorService().execute(moveNode);
+
+//	  waitting đợi Move thực hiện xong rồi hàm light sẽ thực hiện
+
+		synchronized (move) {
+			try {
+				move.wait();
+				move.getExecutorService().shutdown();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		// update
+		Node down = bst.search(valueNext);
+		int cntChill = bst.cntChill(down);
+
+		if (cntChill == 0) {
+			drawing(valueLeft, false);
+		} else {
+			drawing(valueLeft, true);
+		}
+
+	}
+
+	/**
+	 * @param value      giá trị cần xóa
+	 * @param updateForY true nêý set Y , ngược lại
+	 * 
+	 *                   với hàm này thuật toán sẽ như sau
+	 * 
+	 *                   step1 : khi 1 node không con bị xóa khỏi Gui hãy lấy list
+	 *                   giá trị > hơn hoặc < theo vị trí X
+	 * 
+	 *                   step2 : + dùng list đó di chuyển các oval qua phải hoặc qua
+	 *                   trái tùy theo hướng mà thuật toán chỉ định + dịch chuyển
+	 *                   theo hướng Y
+	 * 
+	 *                   step3 : khi oval di chuyển , dây cũng di chuyển theo cập
+	 *                   nhật lại chúng
+	 */
+	private void drawing(int value, boolean updateForY) {
+
+		// giá trị cần xóa
+		int valueRemove = Integer.parseInt(text);
+		int root = bst.getFirstElement();
+		Set<Integer> listPath = new HashSet<Integer>();
+		Node down = bst.search(value);
+		int choise = (value > root ? bst.HIGHT : bst.LOW);
+
+		// lấy một list số di chuyển theo chiều X
+		bst.getNeedNode(value, choise);
+
+		// isCon : có thể di chuyển biến thay thế hay không
+		boolean isCon = bst.listNeedChill.contains(valueRemove);
+		int valueHide = (isCon ? -1 : value);
+
+		// id chuyển theo X
+		update.moveLocationX(bst.listNeedChill, choise, valueHide);
+
+		// nếu udapteY = true
+		if (updateForY) {
+			// lấy những giá trị ở dưới node thay thế
+			bst.getListDown(down);
+			// di chuyển node
+			update.moveLocationY(bst.listDown, value);
+		}
+
+		// một list số bao gòm các sợi dậy cần update
+		listPath = bst.getListUpdateLine(value);
+
+		// xóa node
+		bst.dle(valueRemove);// here
+		if (bst.level > 0) {
+			root = bst.getFirstElement();
+			bst.setPath(root, root);
+		}
+		bst.updatePath(bst.getNode());
+
+		// xóa dây của node di chuyển
+		Line connectMove = line.listLine.get(value);
+		if (connectMove != null) {
+			removeOneOvalAndLine(connectMove, null);
+		}
+
+		// xóa valueMove trong listOval
+		oval.listOval.remove(valueRemove);
+
+		// chuyển key của line.get(valueRemove) bằng giá trị tay thế
+		Line connectUpdate = line.listLine.get(valueRemove);
+		line.listLine.remove(valueRemove);
+		line.listLine.put(value, connectUpdate);
+
+		// cập nhật local trên cây
+		update.ovalOnTree(update.listUpdateOval);
+
+		for (Oval oval : update.listUpdateOval) {
+			listPath.add(oval.getValue());
+		}
+		listPath.remove(valueRemove);
+
+		// cập nhật lại dây
+		update.lineOnTree(listPath);
+
 	}
 
 	/**
@@ -192,8 +273,7 @@ public class Dlete implements Runnable {
 			gui.getContentPane().remove(line);
 		}
 
-		gui.getContentPane().revalidate();
-		gui.getContentPane().repaint();
+		update.loadGui(gui);
 
 	}
 

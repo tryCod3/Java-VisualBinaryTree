@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javax.swing.JPanel;
@@ -151,6 +152,7 @@ public class Event {
 	 */
 	private void whenYouClick() {
 		/** nút ok **/
+
 		control.getJbok().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String text = control.getJtfnumber().getText();
@@ -158,7 +160,9 @@ public class Event {
 				if (isCorrectFormat(text) && isRang(text)) {
 					// insert
 					if (choise.equals("add")) {
+
 						add(text);
+
 					}
 					// delete
 					if (choise.equals("dle")) {
@@ -186,7 +190,7 @@ public class Event {
 	 */
 	protected void add(String text) {
 		Node q = bst.search(Integer.parseInt(text));
-		
+
 		if (q != null) {
 			Message message = new Message("error", "cây nhị phân không được trùng số , hãy kiểm tra lại");
 			Thread thread = new Thread(message);
@@ -256,7 +260,7 @@ public class Event {
 			Dlete dlete = new Dlete(box, text);
 			lightNode.getExecutorService().execute(dlete);
 		}
-		
+
 		lightNode.getExecutorService().shutdown();
 	}
 
@@ -342,7 +346,7 @@ public class Event {
 			lightNode.getExecutorService().execute(node);
 			lightNode.getExecutorService().execute(message);
 		}
-		
+
 		lightNode.getExecutorService().shutdown();
 	}
 
@@ -350,10 +354,6 @@ public class Event {
 	 * reset lại Gui xóa tất cả các node trong cây
 	 */
 	private void clearAll() {
-		bst.getNodeLeftRight();
-		for (Integer i : bst.listTraversal) {
-			bst.setPath(i, -1);
-		}
 		bst.getNeedNode(bst.getFirstElement(), bst.ALL);
 		dlete.removeList(bst.listNeedChill);
 		bst.listDle(bst.listNeedChill);
