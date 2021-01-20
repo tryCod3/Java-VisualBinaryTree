@@ -214,7 +214,8 @@ public class Dlete implements Runnable {
 
 		// một list số bao gòm các sợi dậy cần update
 		listPath = bst.getListUpdateLine(value);
-
+		
+		
 		// xóa node
 		bst.dle(valueRemove);// here
 		if (bst.level > 0) {
@@ -222,7 +223,8 @@ public class Dlete implements Runnable {
 			bst.setPath(root, root);
 		}
 		bst.updatePath(bst.getNode());
-
+		bst.setPath(valueRemove, -1);
+		
 		// xóa dây của node di chuyển
 		Line connectMove = line.listLine.get(value);
 		if (connectMove != null) {

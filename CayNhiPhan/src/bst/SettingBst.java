@@ -280,11 +280,11 @@ public class SettingBst {
 	 */
 	public void listDle(ArrayList<Integer> list) {
 		for (int i = 0; i < list.size(); i++) {
-			setPath(list.get(i), -1);
 			dle(list.get(i));
-			if(level == 1) {
-				setPath(node.getVal() , node.getVal());
-			}else {
+			setPath(list.get(i), -1);
+			if (level == 1) {
+				setPath(node.getVal(), node.getVal());
+			} else {
 				updatePath(node);
 			}
 		}
